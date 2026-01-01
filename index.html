@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>تست شخصیت شناسی: شبیه کدام دانشمند CS/Math هستی؟</title>
+
+  <style>
+    :root{
+      --bg1:#070A12;
+      --bg2:#0B1020;
+      --text:#e8ecff;
+      --muted: rgba(232,236,255,.72);
+      --accent:#7c5cff;
+      --accent2:#00d4ff;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(124,92,255,.22), transparent 55%),
+                  radial-gradient(900px 600px at 80% 20%, rgba(0,212,255,.18), transparent 55%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity:.25;
+      pointer-events:none;
+      mix-blend-mode: overlay;
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:-20%;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      opacity:.08;
+      pointer-events:none;
+      mix-blend-mode: overlay;
+      transform: rotate(2deg);
+    }
+
+    .wrap{ max-width: 980px; margin: 0 auto; padding: 28px 18px 42px; position:relative; }
+
+    .math-sky{
+      position:absolute; inset: -10px 0 auto 0;
+      height: 280px; pointer-events:none;
+      opacity:.9;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='420' viewBox='0 0 900 420'%3E%3Cg fill='none' stroke='rgba(124,92,255,0.35)' stroke-width='1'%3E%3Cpath d='M40 60h160v70h140v60h120'/%3E%3Cpath d='M740 80h-140v90h-120v60h-120'/%3E%3Cpath d='M90 300h120v-70h160v80h120v-50h160'/%3E%3Ccircle cx='200' cy='130' r='4' fill='rgba(0,212,255,0.65)'/%3E%3Ccircle cx='600' cy='170' r='4' fill='rgba(0,212,255,0.65)'/%3E%3Ccircle cx='370' cy='230' r='4' fill='rgba(0,212,255,0.55)'/%3E%3C/g%3E%3Cg fill='rgba(255,255,255,0.08)' font-family='monospace' font-size='14'%3E%3Ctext x='52' y='44'%3E101001%3C/text%3E%3Ctext x='680' y='50'%3E010111%3C/text%3E%3Ctext x='520' y='360'%3Eλ, Σ, Π%3C/text%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
+      opacity:.35;
+      mix-blend-mode: screen;
+      pointer-events:none;
+    }
+    .card::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(700px 280px at 15% 20%, rgba(124,92,255,.22), transparent 55%),
+                  radial-gradient(600px 260px at 85% 10%, rgba(0,212,255,.18), transparent 55%);
+      opacity:.7;
+      pointer-events:none;
+    }
+    .card > *{ position:relative; z-index:1; }
+
+    .hero{
+      display:flex; justify-content:space-between; align-items:flex-start;
+      gap:16px; flex-wrap:wrap; margin-bottom: 14px;
+    }
+    .brand{ display:flex; flex-direction:column; gap:8px; max-width: 660px; }
+    .title{ font-size: 22px; margin:0; letter-spacing:.2px; line-height:1.35; }
+    .subtitle{ margin:0; color: var(--muted); line-height:1.9; font-size: 14.5px; }
+    .pills{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .pill{
+      background: rgba(124,92,255,.16);
+      border: 1px solid rgba(124,92,255,.28);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      backdrop-filter: blur(6px);
+      white-space: nowrap;
+    }
+    .pill.alt{ background: rgba(0,212,255,.12); border-color: rgba(0,212,255,.24); }
+
+    .topbar{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px; flex-wrap:wrap; margin: 10px 0 14px;
+    }
+    .q{ font-size: 18px; margin: 10px 0 10px; line-height:1.65; }
+    .opts{ display:grid; gap: 10px; margin-top: 12px; }
+
+    button.opt{
+      text-align:right; padding: 13px 14px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(15,23,42,.42);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .12s, border-color .12s, background .12s;
+      font-size: 15px; line-height:1.75; backdrop-filter: blur(6px);
+    }
+    button.opt:hover{
+      transform: translateY(-1px);
+      border-color: rgba(0,212,255,.38);
+      background: rgba(15,23,42,.58);
+    }
+
+    .btn{
+      padding: 10px 12px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(15,23,42,.35);
+      color: var(--text); cursor:pointer;
+      backdrop-filter: blur(6px);
+    }
+    .btn.primary{
+      background: linear-gradient(90deg, rgba(124,92,255,.9), rgba(0,212,255,.75));
+      border-color: rgba(255,255,255,.18);
+      color:#061018; font-weight: 700;
+    }
+
+    .footer{ margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .small{ font-size: 13px; color: rgba(232,236,255,.72); line-height:1.8; }
+
+    .resultHead{
+      display:flex; justify-content:space-between; align-items:flex-start;
+      gap:12px; flex-wrap:wrap; margin-top: 4px;
+    }
+
+    .identity{
+      display:flex; gap:14px; align-items:flex-start;
+    }
+    .avatar{
+      width: 54px; height: 54px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(15,23,42,.35);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 16px 30px rgba(0,0,0,.25);
+      flex: 0 0 auto;
+      overflow:hidden;
+      position:relative;
+    }
+    .avatar::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(80px 80px at 30% 25%, rgba(124,92,255,.35), transparent 55%),
+                  radial-gradient(70px 70px at 80% 30%, rgba(0,212,255,.25), transparent 55%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .avatar svg{ width:100%; height:100%; display:block; position:relative; z-index:1; }
+
+    .resultHead h2{ margin: 0 0 6px; font-size: 24px; line-height: 1.25; }
+    .typeTag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 7px 11px; border-radius: 999px;
+      border: 1px solid rgba(0,212,255,.28);
+      background: rgba(0,212,255,.10);
+      font-size: 13px; color: var(--text);
+      margin-top: 6px;
+    }
+    .typeDot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(0,212,255,.35);
+    }
+
+    .grid2{ display:grid; grid-template-columns: 1fr; gap:12px; margin-top: 14px; }
+    @media (min-width: 860px){ .grid2{ grid-template-columns: 1fr 1fr; } }
+
+    .axis{
+      background: rgba(15,23,42,.40);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 12px;
+      backdrop-filter: blur(6px);
+    }
+    .axis h3{ margin:0 0 8px; font-size: 13.5px; color: rgba(232,236,255,.88); letter-spacing:.2px; }
+    .axis .row{ display:flex; justify-content:space-between; font-size: 12.8px; color: rgba(232,236,255,.75); margin-bottom: 6px; }
+    .bar{
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      height: 10px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .bar > div{
+      height:100%;
+      background: linear-gradient(90deg, rgba(124,92,255,.95), rgba(0,212,255,.75));
+      width:50%;
+    }
+
+    .why{
+      margin-top: 14px;
+      background: rgba(15,23,42,.40);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 12px;
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+    }
+    ul{ margin:10px 0 0; padding-right: 18px; line-height:1.95; }
+
+
+    .photo{
+  width: 86px; height: 86px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(15,23,42,.35);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 18px 34px rgba(0,0,0,.28);
+  overflow:hidden;
+  flex: 0 0 auto;
+  position:relative;
+  }
+    .photo img{
+    width:100%; height:100%;
+    object-fit: cover;
+    display:block;
+    filter: saturate(1.05) contrast(1.02);
+  }
+    .photo::after{
+    content:"";
+    position:absolute; inset:0;
+    background: radial-gradient(80px 80px at 30% 25%, rgba(124,92,255,.25), transparent 55%),
+                radial-gradient(70px 70px at 80% 30%, rgba(0,212,255,.18), transparent 55%);
+    pointer-events:none;
+    opacity:.7;
+  }
+    .identity{
+    display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;
+  }
+
+
+    .glow{
+      position:fixed;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      pointer-events:none;
+      background: radial-gradient(circle at center, rgba(0,212,255,.20), transparent 60%);
+      filter: blur(2px);
+      mix-blend-mode: screen;
+      opacity:.65;
+      transform: translate(-50%,-50%);
+    }
+    @media (prefers-reduced-motion: reduce){ .glow{ display:none; } }
+  </style>
+</head>
+
+<body>
+  <div class="glow" id="glow"></div>
+
+  <div class="wrap">
+    <svg class="math-sky" viewBox="0 0 980 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1">
+          <stop offset="0" stop-color="rgba(124,92,255,0.95)"/>
+          <stop offset="1" stop-color="rgba(0,212,255,0.75)"/>
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#g)" stroke-width="1.2" opacity="0.7">
+        <path d="M40 210 C 140 140, 260 240, 360 170 S 560 110, 720 170 S 860 230, 940 140" />
+        <path d="M70 70 h140 v60 h-70 v50 h160" opacity="0.45"/>
+        <path d="M780 80 h-120 v80 h140" opacity="0.45"/>
+        <circle cx="190" cy="130" r="3.8" fill="rgba(0,212,255,0.6)"/>
+        <circle cx="520" cy="170" r="3.8" fill="rgba(0,212,255,0.55)"/>
+        <circle cx="840" cy="120" r="3.8" fill="rgba(0,212,255,0.65)"/>
+      </g>
+      <g fill="rgba(232,236,255,0.14)" font-family="monospace" font-size="16">
+        <text x="60" y="42">∀x ∈ ℝ</text>
+        <text x="210" y="96">Σ</text>
+        <text x="330" y="60">λ</text>
+        <text x="420" y="110">f(n)=f(n−1)+f(n−2)</text>
+        <text x="700" y="58">O(log n)</text>
+        <text x="760" y="150">∇</text>
+        <text x="110" y="200">01001101</text>
+        <text x="650" y="220">Π</text>
+        <text x="820" y="210">∃</text>
+      </g>
+    </svg>
+
+    <div class="card" id="app"></div>
+  </div>
+
+<script>
+
+
+  const glow = document.getElementById("glow");
+  window.addEventListener("pointermove", (e) => {
+    if (!glow) return;
+    glow.style.left = e.clientX + "px";
+    glow.style.top  = e.clientY + "px";
+  });
+
+
+
+  const questions = [
+    { text:"بعد از یک روز سنگین، بیشتر اینطوری شارژ می‌شی:",
+      options:[
+        { label:"با دیدن آدم‌ها، گپ زدن، بیرون رفتن یا کار گروهی", add:{E:1} },
+        { label:"با خلوت، هدفون، تنهایی و محیط ساکت", add:{I:1} }
+      ]},
+    { text:"وقتی در مورد یک موضوع جدید هیجان‌زده‌ای:",
+      options:[
+        { label:"سریع با یکی درمیون می‌ذارم و با حرف زدن ایده‌هام شکل می‌گیره", add:{E:1} },
+        { label:"اول تو ذهنم جمعش می‌کنم، بعد که کامل شد مطرح می‌کنم", add:{I:1} }
+      ]},
+    { text:"در یک جمع جدید معمولاً:",
+      options:[
+        { label:"خودم شروع‌کننده‌ی تعامل و آشنایی هستم", add:{E:1} },
+        { label:"اول مشاهده می‌کنم و کم‌کم وارد می‌شم", add:{I:1} }
+      ]},
+
+    { text:" وقتی می‌خوای چیزی رو یاد بگیری، ترجیحت اینه که:",
+      options:[
+        { label:"از مثال واقعی، تمرین و جزئیات ملموس شروع کنم", add:{S:1} },
+        { label:"اول ایده‌ی کلی و مدل ذهنی رو بفهمم، بعد جزئیات", add:{N:1} }
+      ]},
+    { text:"وقتی با داده/اطلاعات زیادی روبه‌رو می‌شی:",
+      options:[
+        { label:"با نظم دادن به جزئیات و قدم‌به‌قدم جلو رفتن پیش می‌رم", add:{S:1} },
+        { label:"دنبال الگو، ارتباط‌ها و تصویر کلی می‌گردم", add:{N:1} }
+      ]},
+    { text:"کدوم تو حل مسئله بیشتر بهت حس «درست بودن» می‌ده؟",
+      options:[
+        { label:"راه‌حلی که عملی، قابل اجرا و قابل تست باشه", add:{S:1} },
+        { label:"راه‌حلی که در عین سادگی، هوشمندانه باشه و پشتش یک ایده‌ی کلی قوی باشه", add:{N:1} }
+      ]},
+
+    { text:"وقتی بین دو تصمیم گیر می‌کنی، بیشتر این رو معیار می‌گیری:",
+      options:[
+        { label:"منطقی‌تره؟ دقیق‌تره؟ شواهد چی می‌گن؟", add:{T:1} },
+        { label:"روی آدم‌ها چه اثری می‌ذاره؟ با ارزش‌هام سازگاره؟", add:{F:1} }
+      ]},
+    { text:"وقتی به یکی بازخورد می‌دی:",
+      options:[
+        { label:"مستقیم و شفاف می‌گم چی ایراد داره و چطور بهتر شه", add:{T:1} },
+        { label:"طوری می‌گم که طرف له نشه و انگیزه‌اش حفظ بشه", add:{F:1} }
+      ]},
+    { text:"توی بحث، بیشتر به این سمت کشیده می‌شی:",
+      options:[
+        { label:"پیدا کردن علت دقیق و درست یا غلط بودن ادعا", add:{T:1} },
+        { label:"فهمیدن نیت، نگرانی‌ها و رسیدن به توافق انسانی", add:{F:1} }
+      ]},
+
+    { text:"وقتی یک پروژه/درس جدید شروع می‌کنی:",
+      options:[
+        { label:"برنامه می‌ریزم، مسیر مشخص می‌کنم، جلو می‌رم", add:{J:1} },
+        { label:"با آزمون و خطا شروع می‌کنم، مسیر وسط راه شکل می‌گیره", add:{P:1} }
+      ]},
+    { text:"نزدیک ددلاین معمولاً:",
+      options:[
+        { label:"از قبل کار رو جلو بردم که دقیقه ۹۰ وحشت نکنم", add:{J:1} },
+        { label:"فشار ددلاین تمرکزم رو بالا می‌بره؛ دقیقه ۹۰ خوبم", add:{P:1} }
+      ]},
+    { text:"وقتی برنامه‌ات به هم می‌ریزه:",
+      options:[
+        { label:"عصبی می‌شم و سریع دنبال دوباره نظم دادن می‌گردم", add:{J:1} },
+        { label:"اوکی‌ام؛ انعطاف پذیرم و با شرایط جدید سازگار می‌شم", add:{P:1} }
+      ]}
+  ];
+
+  const typeToScientist = {
+    INTJ: { name:"Leonardo Fibonacci", desc:"الگوها و ساختارها رو می‌بینی و از دلشون سیستم می‌سازی.", 
+      photo: "https://m.media-amazon.com/images/I/71uMgYr0WVL.jpg"
+    },
+    INTP: { name:"Maryam Mirzakhani", desc:"عمیق، مفهومی، و صبور. دنبال چرایی هستی، نه فقط جواب.",
+     photo: "https://salemsa.net/wp-content/uploads/2017/07/maryam-mirzakhani.jpg"},
+    INFJ: { name:"Ada Lovelace", desc:"دید آینده‌نگر و مدل ذهنی قوی. ایده‌ها رو جلوتر از زمان می‌بینی.",
+      photo: "https://media.newyorker.com/photos/64123041652f9d9fe976fff0/4:3/w_1779,h_1334,c_limit/ra1146.jpg"
+     },
+    INFP: { name:"Alan Kay", desc:"ایده‌آلیست سیستم‌ها. کامپیوتر رو ابزار فکر می‌دونی.",
+      photo: "https://aes.org/wp-content/uploads/2023/08/Alan_Kay_Photo-721x1024.jpg"
+     },
+
+    ISTJ: { name:"Donald Knuth", desc:"نظم، دقت، و استاندارد. کد/اثبات باید تمیز و ماندگار باشه.",
+      photo: "https://catonmat.net/wp-content/uploads/2010/02/young-donald-knuth-ibm-650-1958.jpg"
+     },
+    ISFJ: { name:"Grace Hopper", desc:"عمل‌گرا و خدمت‌محور. ابزار می‌سازی تا بقیه بهتر کار کنن.",
+      photo: "https://cdn.britannica.com/00/149300-050-DC398492/Grace-Murray-Hopper-Bureau-of-Ordnance-Computation-1946.jpg"
+     },
+    ISTP: { name:"Dennis Ritchie", desc:"مینیمال و مهندسی‌محور. ساده، پایدار، و بی‌اضافه‌کاری.",
+      photo: "https://npr.brightspotcdn.com/dims4/default/0dad88c/2147483647/strip/true/crop/415x415+0+0/resize/880x880!/quality/90/?url=https%3A%2F%2Fmedia.npr.org%2Fassets%2Fimg%2F2011%2F10%2F13%2Fritchie_sq-8775136ca8f064e8d30fdbd603ecfa1652496fcc.jpg"
+     },
+    ISFP: { name:"Benoit Mandelbrot", desc:"شهود و زیبایی‌شناسی ریاضی. الگوها رو در آشوب پیدا می‌کنی.",
+      photo: "https://www.researchgate.net/profile/Harlan-Brothers/publication/236336170/figure/fig11/AS:1075718624669698@1633482714783/Benoit-at-age-thirty-nine-or-forty-when-he-was-working-at-IBM_Q320.jpg"
+     },
+
+    ENTJ: { name:"John von Neumann", desc:"استراتژیست و سیستم‌ساز. در مقیاس بزرگ فکر می‌کنی.",
+      photo: "https://www.economist.com/sites/default/files/images/2021/10/articles/main/20211009_bkp002.jpg"
+     },
+    ENTP: { name:"Leslie Lamport", desc:"چالش‌گر چارچوب‌ها. عاشق دقت منطقی و سیستم‌های توزیع‌شده.",
+      photo: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fet30dd5ncfsmp5sk2qi1.png"
+     },
+    ENFJ: { name:"Seymour Papert", desc:"انسان‌محور. تکنولوژی رو برای رشد ذهن انسان می‌خوای.",
+      photo: "https://analyticsindiamag.com/wp-content/uploads/2018/06/SeymourPapert_708x400.png"
+     },
+    ENFP: { name:"Douglas Hofstadter", desc:"خلاق و بین‌رشته‌ای. با ایده‌ها بازی می‌کنی و ارتباط‌ها رو می‌بینی.",
+      photo: "https://www.ralston.ac/assets/img/resized/person--large/douglasrhofstader.jpg"
+     },
+
+    ESTJ: { name:"Edsger W. Dijkstra", desc:"روش‌مند و سخت‌گیر. درست بودن و اثبات‌پذیری اولویت شماره یکه.",
+      photo: "https://oylenshpeegul.gitlab.io/blog/posts/20240217/dijkstra.jpg"
+     },
+    ESFJ: { name:"George Pólya", desc:"راهنمای حل مسئله. چارچوب می‌سازی تا بقیه بهتر فکر کنن.",
+      photo: "https://matefil.com/wp-content/uploads/2021/05/george-polye.jpg"
+     },
+    ESTP: { name:"John McCarthy", desc:"جسور و سازنده. ایده رو سریع به سیستم تبدیل می‌کنی.",
+      photo: "https://media.springernature.com/full/springer-static/image/art%3A10.1038%2F480040a/MediaObjects/41586_2011_BF480040a_Figa_HTML.jpg"
+     },
+    ESFP: { name:"John Conway", desc:"بازیگوشِ نابغه. ریاضی/CS رو به کشف و سرگرمی تبدیل می‌کنی.",
+      photo: "https://media.wired.com/photos/595481de8e8cc150fa8ec1f3/master/pass/Conway_1k.jpg"
+     }
+  };
+
+
+  function avatarSVGByScientist(name){
+    const theme = {
+      "Leonardo Fibonacci": "fibo",
+      "Maryam Mirzakhani": "geo",
+      "Ada Lovelace": "algo",
+      "Alan Kay": "idea",
+      "Donald Knuth": "book",
+      "Grace Hopper": "ship",
+      "Dennis Ritchie": "c",
+      "Benoit Mandelbrot": "fractal",
+      "John von Neumann": "matrix",
+      "Leslie Lamport": "dist",
+      "Seymour Papert": "turtle",
+      "Douglas Hofstadter": "loop",
+      "Edsger W. Dijkstra": "proof",
+      "George Pólya": "steps",
+      "John McCarthy": "lisp",
+      "John Conway": "life"
+    }[name] || "default";
+
+    const svg = (inner) => `
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="avatar">
+        <defs>
+          <linearGradient id="a" x1="0" x2="1">
+            <stop offset="0" stop-color="rgba(124,92,255,0.95)"/>
+            <stop offset="1" stop-color="rgba(0,212,255,0.75)"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="64" height="64" rx="16" fill="rgba(15,23,42,0.22)"/>
+        <g fill="none" stroke="url(#a)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+          ${inner}
+        </g>
+        <g fill="rgba(232,236,255,0.22)" font-family="monospace" font-size="10">
+          <text x="8" y="56">${theme.toUpperCase().slice(0,6)}</text>
+        </g>
+      </svg>
+    `;
+
+    const icons = {
+      fibo: svg(`
+        <path d="M12 50c10-2 18-10 20-20 2-10 10-18 20-20" opacity=".85"/>
+        <path d="M14 44c7-1 12-6 13-13 1-7 6-12 13-13" opacity=".85"/>
+        <path d="M18 38c4-1 7-4 8-8 1-4 4-7 8-8" opacity=".85"/>
+        <circle cx="32" cy="32" r="3" fill="rgba(0,212,255,0.55)" stroke="none"/>
+      `),
+
+      geo: svg(`
+        <path d="M14 46c12-16 24-16 36 0" opacity=".9"/>
+        <path d="M18 20c10 6 18 6 28 0" opacity=".7"/>
+        <path d="M20 44c2-8 6-14 12-18 6 4 10 10 12 18" opacity=".85"/>
+        <circle cx="32" cy="26" r="2.8" fill="rgba(0,212,255,0.55)" stroke="none"/>
+      `),
+
+      algo: svg(`
+        <path d="M18 18h28v12H18z"/>
+        <path d="M22 42h20"/>
+        <path d="M32 30v12"/>
+        <path d="M26 42l6 6 6-6" />
+      `),
+
+      idea: svg(`
+        <path d="M24 28c0-5 4-9 8-9s8 4 8 9c0 4-2 6-4 8-1 1-1 3-1 3H29s0-2-1-3c-2-2-4-4-4-8z"/>
+        <path d="M28 44h8"/>
+        <path d="M30 48h4"/>
+      `),
+
+      book: svg(`
+        <path d="M18 18h18c3 0 6 2 6 5v24c-2-2-4-3-7-3H18z"/>
+        <path d="M46 18h-3c-3 0-6 2-6 5v21" opacity=".8"/>
+        <path d="M22 26h12" opacity=".7"/>
+        <path d="M22 32h12" opacity=".7"/>
+      `),
+
+      ship: svg(`
+        <path d="M18 36h28l-4 8H22z"/>
+        <path d="M24 28h16"/>
+        <path d="M32 18v18"/>
+        <path d="M22 44c6 4 14 4 20 0" opacity=".8"/>
+      `),
+
+      c: svg(`
+        <path d="M44 22c-4-4-20-3-22 10s14 15 22 10" />
+        <path d="M24 26h6" opacity=".6"/>
+        <path d="M24 38h6" opacity=".6"/>
+      `),
+
+      fractal: svg(`
+        <path d="M14 40c6-10 12-10 18 0s12 10 18 0" opacity=".9"/>
+        <path d="M18 36c4-6 8-6 12 0s8 6 12 0" opacity=".8"/>
+        <path d="M22 32c2-3 4-3 6 0s4 3 6 0" opacity=".7"/>
+      `),
+
+      matrix: svg(`
+        <path d="M18 18v28"/>
+        <path d="M46 18v28"/>
+        <path d="M22 22h20"/>
+        <path d="M22 30h20"/>
+        <path d="M22 38h20"/>
+        <circle cx="28" cy="30" r="2.5" fill="rgba(0,212,255,0.55)" stroke="none"/>
+      `),
+
+      dist: svg(`
+        <circle cx="18" cy="28" r="3" fill="rgba(0,212,255,0.55)" stroke="none"/>
+        <circle cx="46" cy="20" r="3" fill="rgba(0,212,255,0.55)" stroke="none"/>
+        <circle cx="44" cy="44" r="3" fill="rgba(0,212,255,0.55)" stroke="none"/>
+        <path d="M18 28L46 20"/>
+        <path d="M18 28L44 44"/>
+        <path d="M46 20L44 44" opacity=".7"/>
+      `),
+
+      turtle: svg(`
+        <path d="M22 34c0-6 20-6 20 0s-20 6-20 0z"/>
+        <path d="M26 34v0"/>
+        <path d="M18 34l-4 4"/>
+        <path d="M46 34l4 4"/>
+        <path d="M32 28l0-6" opacity=".85"/>
+      `),
+
+      loop: svg(`
+        <path d="M22 22h20v20H22z" opacity=".85"/>
+        <path d="M26 26h12v12H26z" opacity=".7"/>
+        <path d="M32 18v8"/>
+        <path d="M32 38v8"/>
+        <path d="M18 32h8"/>
+        <path d="M38 32h8"/>
+      `),
+
+      proof: svg(`
+        <path d="M18 18h28"/>
+        <path d="M18 24h20" opacity=".7"/>
+        <path d="M18 30h24" opacity=".7"/>
+        <path d="M18 36h18" opacity=".7"/>
+        <path d="M20 44l6 6 18-18"/>
+      `),
+
+      steps: svg(`
+        <path d="M18 46h10v-10h10v-10h10v-8" />
+        <path d="M18 46h28" opacity=".7"/>
+        <circle cx="28" cy="36" r="2.8" fill="rgba(0,212,255,0.55)" stroke="none"/>
+      `),
+
+      lisp: svg(`
+        <path d="M22 20c-6 4-6 20 0 24" />
+        <path d="M42 20c6 4 6 20 0 24" />
+        <path d="M26 32h12" opacity=".8"/>
+        <path d="M30 28l-4 4 4 4" opacity=".8"/>
+      `),
+
+      life: svg(`
+        <path d="M18 24h8v8h-8z"/>
+        <path d="M30 28h8v8h-8z"/>
+        <path d="M42 24h8v8h-8z"/>
+        <path d="M30 40h8v8h-8z"/>
+      `),
+
+      default: svg(`
+        <path d="M20 20h24v24H20z"/>
+        <path d="M24 32h16" opacity=".7"/>
+        <path d="M32 24v16" opacity=".7"/>
+      `)
+    };
+
+    return icons[theme];
+  }
+
+
+
+  const baseScores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+  let state = { i:0, scores:{...baseScores}, history:[] };
+  const app = document.getElementById("app");
+
+
+  function computeType(scores){
+    const EI = scores.I > scores.E ? "I" : "E";
+    const SN = scores.N > scores.S ? "N" : "S";
+    const TF = scores.F > scores.T ? "F" : "T";
+    const JP = scores.P > scores.J ? "P" : "J";
+    return EI + SN + TF + JP;
+  }
+  function applyAdd(add, sign=+1){
+    for (const [k,v] of Object.entries(add)){
+      state.scores[k] = (state.scores[k] || 0) + sign * v;
+    }
+  }
+  function pct(a, b){
+    const total = a + b;
+    if (!total) return 50;
+    return Math.round((a / total) * 100);
+  }
+  function renderAxisCard(title, leftLabel, leftScore, rightLabel, rightScore){
+    const leftPct = pct(leftScore, rightScore);
+    return `
+      <div class="axis">
+        <h3>${title}</h3>
+        <div class="row"><span>${leftLabel}</span><span>${leftPct}%</span></div>
+        <div class="bar"><div style="width:${leftPct}%"></div></div>
+        <div class="row" style="margin-top:8px;"><span>${rightLabel}</span><span>${100-leftPct}%</span></div>
+      </div>
+    `;
+  }
+
+  function renderStart(){
+    app.innerHTML = `
+      <div class="hero">
+        <div class="brand">
+          <h1 class="title">شبیه کدام دانشمند CS/Math هستی؟</h1>
+          <p class="subtitle">
+            ۱۲ سؤال کوتاه، خروجی ۴ حرفی (MBTI-like)، و بعد یک دانشمند که «الهام‌گرفته از سبک فکری/کاری» است.
+            نتیجه قرار نیست حکم قطعی شخصیتت باشه. فقط یک آینه‌ی سرگرم‌کننده‌ست.
+          </p>
+        </div>
+        <div class="pills">
+          <div class="pill">تست نشریه</div>
+          <div class="pill alt">${questions.length} سؤال</div>
+          <div class="pill">CS + Math</div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button class="btn primary" onclick="start()">شروع آزمون</button>
+        <span class="small">اطلاعات ذخیره نمی‌شود. همه‌چیز فقط داخل مرورگر است.</span>
+      </div>
+
+      <div class="why" style="margin-top:18px;">
+        <strong>محورها</strong>
+        <div class="small" style="margin-top:8px;">
+          E/I (انرژی) · S/N (درک) · T/F (تصمیم) · J/P (سبک زندگی)
+        </div>
+      </div>
+    `;
+  }
+
+  window.start = function(){
+    state = { i:0, scores:{...baseScores}, history:[] };
+    renderQuestion();
+  };
+
+  function renderQuestion(){
+    const q = questions[state.i];
+    const progress = state.i + 1;
+
+    app.innerHTML = `
+      <div class="topbar">
+        <div class="pills">
+          <div class="pill alt">سؤال ${progress} از ${questions.length}</div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          ${state.i>0 ? `<button class="btn" onclick="back()">قبلی</button>` : ``}
+          <button class="btn" onclick="renderStart()">خروج</button>
+        </div>
+      </div>
+
+      <div class="q">${q.text}</div>
+      <div class="opts">
+        ${q.options.map((o, idx)=>`
+          <button class="opt" onclick="answer(${idx})">${o.label}</button>
+        `).join("")}
+      </div>
+
+      <div class="footer">
+        <span class="small">هیچ گزینه‌ای «بهتر» نیست. فقط نزدیک‌تر به سبک توست.</span>
+      </div>
+    `;
+  }
+
+  window.answer = function(optionIndex){
+    const q = questions[state.i];
+    const opt = q.options[optionIndex];
+
+    applyAdd(opt.add, +1);
+    state.history.push({ qIndex: state.i, add: opt.add, chosen: opt.label, qText: q.text });
+
+    state.i++;
+    if (state.i >= questions.length) renderResult();
+    else renderQuestion();
+  };
+
+  window.back = function(){
+    if (!state.history.length) return;
+    const last = state.history.pop();
+    applyAdd(last.add, -1);
+    state.i = Math.max(0, state.i-1);
+    renderQuestion();
+  };
+
+  function renderResult(){
+    const type = computeType(state.scores);
+    const profile = typeToScientist[type] || { name:"نامشخص", desc:"برای این تایپ هنوز پروفایل تعریف نشده." };
+    const avatar = avatarSVGByScientist(profile.name);
+    const photo = profile.photo || "";
+    const whyList = state.history.slice(0, 6).map(x => `<li>«${x.qText}» : ${x.chosen}</li>`).join("");
+
+    app.innerHTML = `
+      <div class="resultHead">
+
+    <div class="identity">
+      <div class="avatar">${avatar}</div>
+      ${photo ? `
+        <div class="photo">
+          <img src="${photo}" alt="${profile.name}"
+               onerror="this.closest('.photo').style.display='none';" />
+        </div>
+      ` : ``}
+      <div>
+        <h2>${profile.name}</h2>
+        <div class="typeTag"><span class="typeDot"></span><span>Type: ${type}</span></div>
+        <p class="subtitle" style="margin-top:10px;">${profile.desc}</p>
+      </div>
+    </div>
+
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start;">
+          <button class="btn" onclick="start()">شروع مجدد</button>
+          <button class="btn" onclick="renderStart()">صفحه شروع</button>
+        </div>
+      </div>
+
+      <div class="grid2">
+        ${renderAxisCard("E / I", "E (برون‌گرا)", state.scores.E, "I (درون‌گرا)", state.scores.I)}
+        ${renderAxisCard("S / N", "S (جزئیات‌محور)", state.scores.S, "N (الگو‌محور)", state.scores.N)}
+        ${renderAxisCard("T / F", "T (منطقی)", state.scores.T, "F (ارزش/آدم‌محور)", state.scores.F)}
+        ${renderAxisCard("J / P", "J (برنامه‌محور)", state.scores.J, "P (انعطاف‌محور)", state.scores.P)}
+      </div>
+
+      <div class="why">
+        <strong>چرا این نتیجه؟</strong>
+        <ul>${whyList || "<li>چون انتخاب کردی. سیستم هم جمع زد.</li>"}</ul>
+        <div class="small" style="margin-top:8px;">
+          این نگاشت‌ها آرکتایپی هستند و ادعای MBTI واقعی افراد نیستند.
+        </div>
+      </div>
+    `;
+  }
+
+  renderStart();
+</script>
+</body>
+</html>
