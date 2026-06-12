@@ -6,6 +6,21 @@
   <title>تست شخصیت شناسی: شبیه کدام دانشمند CS/Math هستی؟</title>
 
   <style>
+
+    @font-face {
+      font-family: 'MyCyber'; 
+      src:url('fonts/ARCADE.ttf') format('truetype');
+      unicode-range: U+0000-007F; 
+    }
+
+
+    @font-face {
+      font-family: 'MyCyber'; 
+      src: url('fonts/Sahel.woff') format('woff'),
+          url('fonts/Sahel.ttf') format('truetype');
+      unicode-range: U+0600-06FF, U+FB50-FDFF, U+FE70-FEFF;
+    }
+
     :root{
       --bg1:#070A12;
       --bg2:#0B1020;
@@ -19,7 +34,7 @@
     *{ box-sizing: border-box; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: 'MyCyber', system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color: var(--text);
       background: radial-gradient(1200px 700px at 20% 10%, rgba(124,92,255,.22), transparent 55%),
                   radial-gradient(900px 600px at 80% 20%, rgba(0,212,255,.18), transparent 55%),
@@ -147,19 +162,43 @@
     .q{ font-size: 18px; margin: 10px 0 10px; line-height:1.65; }
     .opts{ display:grid; gap: 10px; margin-top: 12px; }
 
-    button.opt{
-      text-align:right; padding: 13px 14px; border-radius: 14px;
+    button.opt {
+      text-align: right; 
+      padding: 14px 18px; 
+      border-radius: 14px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(15,23,42,.42);
       color: var(--text);
-      cursor:pointer;
-      transition: transform .12s, border-color .12s, background .12s;
-      font-size: 15px; line-height:1.75; backdrop-filter: blur(6px);
+      cursor: pointer;
+      transition: transform .2s cubic-bezier(0.4, 0, 0.2, 1), border-color .2s, background .2s, box-shadow .2s;
+      font-size: 15px; 
+      line-height: 1.75; 
+      backdrop-filter: blur(6px);
+      position: relative; 
+      overflow: hidden;
     }
-    button.opt:hover{
-      transform: translateY(-1px);
-      border-color: rgba(0,212,255,.38);
-      background: rgba(15,23,42,.58);
+
+    button.opt:hover {
+      transform: translateX(-4px); 
+      border-color: var(--accent2);
+      background: rgba(15,23,42,.65);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), inset 0 0 12px rgba(0, 212, 255, 0.05);
+    }
+
+    button.opt::before {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 8px 0 0 8px;
+      border-color: transparent transparent transparent var(--accent2);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    button.opt:hover::before {
+      opacity: 1;
     }
 
     .btn{
@@ -246,7 +285,7 @@
       background: linear-gradient(90deg, rgba(124,92,255,.95), rgba(0,212,255,.75));
       width:50%;
     }
-
+    
     .why{
       margin-top: 14px;
       background: rgba(15,23,42,.40);
@@ -259,16 +298,16 @@
 
 
     .photo{
-  width: 86px; height: 86px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(15,23,42,.35);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 18px 34px rgba(0,0,0,.28);
-  overflow:hidden;
-  flex: 0 0 auto;
-  position:relative;
-  }
+      width: 86px; height: 86px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(15,23,42,.35);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 18px 34px rgba(0,0,0,.28);
+      overflow:hidden;
+      flex: 0 0 auto;
+      position:relative;
+    }
     .photo img{
     width:100%; height:100%;
     object-fit: cover;
@@ -276,30 +315,41 @@
     filter: saturate(1.05) contrast(1.02);
   }
     .photo::after{
-    content:"";
-    position:absolute; inset:0;
-    background: radial-gradient(80px 80px at 30% 25%, rgba(124,92,255,.25), transparent 55%),
-                radial-gradient(70px 70px at 80% 30%, rgba(0,212,255,.18), transparent 55%);
-    pointer-events:none;
-    opacity:.7;
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(80px 80px at 30% 25%, rgba(124,92,255,.25), transparent 55%),
+                  radial-gradient(70px 70px at 80% 30%, rgba(0,212,255,.18), transparent 55%);
+      pointer-events:none;
+      opacity:.7;
   }
     .identity{
-    display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;
+      display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;
   }
-
 
     .glow{
       position:fixed;
       width: 280px; height: 280px;
       border-radius: 50%;
       pointer-events:none;
-      background: radial-gradient(circle at center, rgba(0,212,255,.20), transparent 60%);
+      background: radial-gradient(circle at center, rgba(124,92,255,.95), transparent 40%);
       filter: blur(2px);
       mix-blend-mode: screen;
       opacity:.65;
       transform: translate(-50%,-50%);
     }
     @media (prefers-reduced-motion: reduce){ .glow{ display:none; } }
+    
+    
+      button, 
+      input, 
+      select, 
+      textarea, 
+      .btn, 
+      .option-btn, 
+      .actions button {
+        font-family: 'MyCyber', system-ui, -apple-system, sans-serif !important;
+      }
+    
   </style>
 </head>
 
@@ -418,97 +468,97 @@
 
   const typeToScientist = {
     INTJ: { name:"Leonardo Fibonacci", desc:"الگوها و ساختارها رو می‌بینی و از دلشون سیستم می‌سازی.", 
-      photo: "https://m.media-amazon.com/images/I/71uMgYr0WVL.jpg",
+      photo: "images/Fibonacci.jpg",
       analysis: "تو وقتی با یک مسئله رو به رو می‌شی، دنبال «قاعده» می‌گردی، نه جواب صرف. ترجیح میدی که یک چارچوب بسازی بعداً بتونه ده‌ها موقعیت مشابه رو هم پوشش بده. این نگاه ساختارمند تو رو به فیبوناچی نزدیک می‌کنه: کسی که ی ک الگوی ساده را تبدیل به زبان توضیح رشد و نظم می‌کرد.",
       bio: "ریاضیدان ایتالیایی قرن سیزدهم که با معرفی دنبالهٔ فیبوناچی نقش مهمی در گسترش ریاضیات در اروپا و اتصال آن به مسائل رشد و الگو ایفا کرد."
     },
 
     INTP: { name:"Maryam Mirzakhani", desc:"عمیق، مفهومی، و صبور. دنبال چرایی هستی، نه فقط جواب.",
-     photo: "https://salemsa.net/wp-content/uploads/2017/07/maryam-mirzakhani.jpg",
+     photo: "images/Mirzakhani.jpg",
     analysis: "تو مسئله را مثل یک قلمرو برای کشف می‌بینی، نه یک پازل برای حل سریع. با ایده‌ها بازی می‌کنی، از مسیرهای فرعی نمی‌ترسی و می‌تونی مدت‌ها روی یک مفهوم بمانی تا واقعاً «جا بیفتد». این صبر و عمق مفهومی همان چیزی است که تو را به مریم میرزاخانی نزدیک می‌کند: پیشروی آهسته اما واقعی، با تمرکز روی فهمِ عمیق.",
     bio: "ریاضیدان ایرانی و استاد دانشگاه استنفورد، برندهٔ مدال فیلدز در سال ۲۰۱۴ به‌خاطر پژوهش‌های عمیقش در هندسه، سطوح ریمانی و سیستم‌های دینامیکی."
     },
   
     INFJ: { name:"Ada Lovelace", desc:"دید آینده‌نگر و مدل ذهنی قوی. ایده‌ها رو جلوتر از زمان می‌بینی.",
-      photo: "https://media.newyorker.com/photos/64123041652f9d9fe976fff0/4:3/w_1779,h_1334,c_limit/ra1146.jpg",
+      photo: "images/Lovelace.png",
     analysis: "تو بیشتر از این‌که درگیر جزئیات پراکنده شوی، دنبال معنای کلی و جهتی هستی که یک سیستم به سمتش می‌رود. معمولاً قبل از این‌که همه‌چیز آماده شود، در ذهنت تصویر آینده شکل گرفته. همین نگاه آینده‌نگر و مفهوم‌محور تو را به آدا لاولیس نزدیک می‌کند: دیدنِ ظرفیتِ یک ماشین یا ایده، فراتر از کاربردِ امروزِ آن.",
     bio: "ریاضیدان قرن نوزدهم که به‌عنوان نخستین برنامه‌نویس شناخته می‌شود و دیدگاهی فراتر از زمان خود نسبت به محاسبات و ماشین‌ها داشت."
      },
 
     INFP: { name:"Alan Kay", desc:"ایده‌آلیست سیستم‌ها. کامپیوتر رو ابزار فکر می‌دونی.",
-      photo: "https://aes.org/wp-content/uploads/2023/08/Alan_Kay_Photo-721x1024.jpg",
+      photo: "images/Kay.jpg",
     analysis: "تو به ابزارها فقط به چشم ابزار نگاه نمی‌کنی؛ دنبال اینی که ابزار، فکر کردن را بهتر کند. به جای این‌که فقط «حلش کنیم»، دوست داری «بهترش کنیم»: تجربه، یادگیری، و مدل ذهنی انسان. این ترکیبِ تخیل و طراحیِ مفهومی تو را به آلن کی نزدیک می‌کند؛ کسی که کامپیوتر را بیشتر یک رسانه برای اندیشه می‌دید تا صرفاً یک ماشین.",
     bio: "دانشمند علوم کامپیوتر و یکی از پیشگامان برنامه‌نویسی شی‌گرا که کامپیوتر را ابزاری برای تقویت تفکر و یادگیری انسان می‌دانست."
      },
 
     ISTJ: { name:"Donald Knuth", desc:"نظم، دقت، و استاندارد. کد/اثبات باید تمیز و ماندگار باشه.",
-      photo: "https://catonmat.net/wp-content/uploads/2010/02/young-donald-knuth-ibm-650-1958.jpg",
+      photo: "images/Knuth.jpg",
     analysis: "تو از بی‌نظمی فکری بدت می‌آید و به «درست انجام دادن» احترام می‌گذاری. اگر چیزی قرار است بماند، باید شفاف، قابل پیگیری و قابل اعتماد باشد؛ چه کد باشد چه اثبات. این روحیه‌ی دقیق و استانداردمحور، تو را به کنوث نزدیک می‌کند: تمرکز روی کیفیت، توضیح‌پذیری، و ساختن چیزی که سال‌ها بعد هم قابل اتکا باشد.",
     bio: "دانشمند علوم کامپیوتر و نویسندهٔ مجموعهٔ «The Art of Computer Programming»، با تمرکز بر دقت، زیبایی و ماندگاری الگوریتم‌ها."
      },
 
     ISFJ: { name:"Grace Hopper", desc:"عمل‌گرا و خدمت‌محور. ابزار می‌سازی تا بقیه بهتر کار کنن.",
-      photo: "https://cdn.britannica.com/00/149300-050-DC398492/Grace-Murray-Hopper-Bureau-of-Ordnance-Computation-1946.jpg",
+      photo: "images/Hopper.jpg",
       analysis: "تو دوست داری اثر واقعی و ملموس بگذاری: چیزی بسازی که کار دیگران را راحت‌تر کند و از خطا و سردرگمی کم کند. اهل سروصدا نیستی، ولی پشت صحنه ساختار ایجاد می‌کنی. این رویکردِ عمل‌گرای انسان‌دوست، تو را به گریس هاپر نزدیک می‌کند: تبدیل پیچیدگی به چیزی قابل استفاده، برای آدم‌های بیشتر.",
       bio: "دانشمند علوم کامپیوتر و نیروی دریایی آمریکا که نقش کلیدی در توسعهٔ زبان‌های سطح بالا و قابل فهم برای انسان داشت."
      },
 
     ISTP: { name:"Dennis Ritchie", desc:"مینیمال و مهندسی‌محور. ساده، پایدار، و بی‌اضافه‌کاری.",
-      photo: "https://npr.brightspotcdn.com/dims4/default/0dad88c/2147483647/strip/true/crop/415x415+0+0/resize/880x880!/quality/90/?url=https%3A%2F%2Fmedia.npr.org%2Fassets%2Fimg%2F2011%2F10%2F13%2Fritchie_sq-8775136ca8f064e8d30fdbd603ecfa1652496fcc.jpg",
+      photo: "images/Ritchie.jpg",
       analysis: "تو به جای حرف زیاد، دنبال راه‌حل‌های کارا و تمیز می‌ری. از پیچیدگیِ نمایشی خوشت نمی‌آید و ترجیح می‌دهی سیستم «ساده اما درست» باشد. این نگاه مهندسی و مینیمال، تو را به دنیس ریچی نزدیک می‌کند: ساختن پایه‌های محکم با کمترین زوائد، طوری که سیستم بتواند سال‌ها دوام بیاورد.",
       bio: "دانشمند علوم کامپیوتر و خالق زبان C و یکی از معماران اصلی سیستم‌عامل یونیکس، با تأکید بر سادگی و کارایی."
     },
 
     ISFP: { name:"Benoit Mandelbrot", desc:"شهود و زیبایی‌شناسی ریاضی. الگوها رو در آشوب پیدا می‌کنی.",
-      photo: "https://www.researchgate.net/profile/Harlan-Brothers/publication/236336170/figure/fig11/AS:1075718624669698@1633482714783/Benoit-at-age-thirty-nine-or-forty-when-he-was-working-at-IBM_Q320.jpg",
-      analysis: "تو از دیدنِ نظمِ پنهان در چیزهایی که شلوغ یا تصادفی به نظر می‌رسند لذت می‌بری. گاهی با شهود جلو می‌روی و بعد برایش زبان دقیق پیدا می‌کنی. این ترکیبِ شهود و زیبایی‌شناسیِ ساختاری تو را به ماندلبرو نزدیک می‌کند: دیدنِ الگوها در پیچیدگی و تبدیلشان به یک تصویر قابل فهم.",
+      photo: "images/Mandelbrot.jpg",
+      analysis: "تو از دیدنِ نظمِ پنهان در چیزهایی که شلوغ یا تصادفی به نظر می‌رسند لذت می‌بری. گاهی با شهود جلو می‌روی و بعد برایش زبان دقیق پیدا می‌کنی. این ترکیب شهود و زیبایی‌شناسیِ ساختاری تو را به ماندلبرو نزدیک می‌کند: دیدن الگوها در پیچیدگی و تبدیلشان به یک تصویر قابل فهم.",
       bio: "ریاضیدان فرانسوی-آمریکایی که بنیان‌گذار هندسهٔ فرکتال بود و نشان داد نظم می‌تواند در دل آشوب پنهان باشد."
      },
 
     ENTJ: { name:"John von Neumann", desc:"استراتژیست و سیستم‌ساز. در مقیاس بزرگ فکر می‌کنی.",
-      photo: "https://www.economist.com/sites/default/files/images/2021/10/articles/main/20211009_bkp002.jpg",
+      photo: "images/Neumann.jpg",
       analysis: "تو به جای گیر کردن در یک جزء، کل سیستم را می‌بینی: هدف، منابع، مسیر، و نتیجه. معمولاً تصمیم را سریع می‌گیری و بعد با ساختار دادن، دیگران را هم هم‌راستا می‌کنی. این نگاه کلان و استراتژیک تو را به فون نویمان نزدیک می‌کند: ترکیب سرعت ذهنی با توانایی طراحی سیستم‌های بزرگ و چندلایه.",
       bio: "ریاضیدان و نابغهٔ چندرشته‌ای قرن بیستم که در معماری کامپیوتر، نظریه بازی‌ها و سیستم‌های پیچیده تأثیر بنیادین داشت."
      },
 
     ENTP: { name:"Leslie Lamport", desc:"چالش‌گر چارچوب‌ها. عاشق دقت منطقی و سیستم‌های توزیع‌شده.",
-      photo: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fet30dd5ncfsmp5sk2qi1.png",
+      photo: "images/Lamport.jpg",
       analysis: "تو از این‌که «همه بدیهی فرضش می‌کنن» خوشحال نمی‌شی؛ برعکس، دقیقاً همان‌جا کنجکاو می‌شی. دوست داری تعریف‌ها را تیزتر کنی، تناقض‌ها را بیرون بکشی و مدل دقیق بسازی. این روحیه‌ی پرسش‌گر و چارچوب‌ساز تو را به لمپورت نزدیک می‌کند: تبدیل ایده‌های مبهم به چیزی که بتوان رویش اعتماد و استدلال کرد.",
       bio: "دانشمند علوم کامپیوتر و برندهٔ جایزه تورینگ، مشهور به کارهایش در سیستم‌های توزیع‌شده و تعریف دقیق مفاهیم همزمانی."
      },
 
     ENFJ: { name:"Seymour Papert", desc:"انسان‌محور. تکنولوژی رو برای رشد ذهن انسان می‌خوای.",
-      photo: "https://analyticsindiamag.com/wp-content/uploads/2018/06/SeymourPapert_708x400.png",
+      photo: "images/Papert.jpg",
       analysis: "تو بیش از هر چیز به این فکر می‌کنی که دانش و ابزار چطور می‌تونن آدم‌ها را توانمندتر کنن. معمولاً نقش هدایت‌گر داری: کمک می‌کنی دیگران هم بفهمن و رشد کنن. این نگاه آموزشی و انسان‌محور تو را به پاپرت نزدیک می‌کند: ساختن محیط‌هایی که یادگیری را طبیعی‌تر و خلاقانه‌تر می‌کنند.",
       bio: "ریاضیدان و پژوهشگر آموزش که معتقد بود یادگیری باید فعال، خلاق و مبتنی بر ساختن دانش توسط خود فرد باشد."
      },
 
     ENFP: { name:"Douglas Hofstadter", desc:"خلاق و بین‌رشته‌ای. با ایده‌ها بازی می‌کنی و ارتباط‌ها رو می‌بینی.",
-      photo: "https://www.ralston.ac/assets/img/resized/person--large/douglasrhofstader.jpg",
+      photo: "images/Hofstadter.jpg",
       analysis: "ذهن تو عاشق اتصال دادن نقطه‌هاست: بین مفاهیم، بین رشته‌ها، بین استعاره‌ها و ساختارها. از ایده‌های بازیگوشانه به کشف‌های جدی می‌رسی و معمولاً دنبال «معنای پشت الگو» هستی. این سبکِ خلاق و ارتباط‌محور تو را به هافستادر نزدیک می‌کند: دیدنِ حلقه‌ها، خودارجاعی‌ها و ارتباط‌های غیرمنتظره در فکر و محاسبه.",
       bio: "دانشمند علوم شناختی و نویسنده، مشهور به بررسی خودارجاعی، آگاهی و ارتباط میان ریاضیات، هنر و ذهن."
      },
 
     ESTJ: { name:"Edsger W. Dijkstra", desc:"روش‌مند و سخت‌گیر. درست بودن و اثبات‌پذیری اولویت شماره یکه.",
-      photo: "https://oylenshpeegul.gitlab.io/blog/posts/20240217/dijkstra.jpg",
+      photo: "images/Dijkstra.jpg",
       analysis: "تو دوست داری همه‌چیز تمیز، قابل دفاع و روشن باشد. اگر یک ایده اثبات‌پذیر نباشد یا مرزهایش معلوم نباشد، بهش اعتماد نمی‌کنی. این انضباط فکری و حساسیت به درست بودن تو را به دیکسترا نزدیک می‌کند: اول درست بودن، بعد زیبایی و سرعت. سخت‌گیرانه، ولی قابل اتکا.",
       bio: "دانشمند علوم کامپیوتر و یکی از تأثیرگذارترین نظریه‌پردازان الگوریتم، با تأکید بر درست‌بودن و اثبات‌پذیری."
      },
 
     ESFJ: { name:"George Pólya", desc:"راهنمای حل مسئله. چارچوب می‌سازی تا بقیه بهتر فکر کنن.",
-      photo: "https://matefil.com/wp-content/uploads/2021/05/george-polye.jpg",
+      photo: "images/Pólya.jpg",
       analysis: "تو از این‌که فقط خودت بلد باشی راضی نمی‌شی؛ دوست داری روش را قابل انتقال کنی. با توضیح دادن، مثال زدن و ساختن مسیرهای حل، به دیگران کمک می‌کنی بهتر فکر کنن. این روحیه‌ی راهنما و چارچوب‌ساز تو را به پولیا نزدیک می‌کند: تبدیل حل مسئله به یک مهارت قابل یادگیری، نه یک استعداد مرموز.",
       bio: "ریاضیدان برجسته و نویسندهٔ کتاب‌های کلاسیک حل مسئله که روش فکر کردن را به‌عنوان مهارتی قابل آموزش معرفی کرد."
      },
 
     ESTP: { name:"John McCarthy", desc:"جسور و سازنده. ایده رو سریع به سیستم تبدیل می‌کنی.",
-      photo: "https://media.springernature.com/full/springer-static/image/art%3A10.1038%2F480040a/MediaObjects/41586_2011_BF480040a_Figa_HTML.jpg",
+      photo: "images/McCarthy.jpg",
       analysis: "تو اهل آزمون عملی هستی: ایده اگر نتونه روی زمین راه بره، برایت کامل نیست. ریسک می‌کنی، سریع می‌سازی و بعد اصلاح می‌کنی. این انرژیِ سازنده و جسارت فنی تو را به جان مک‌کارتی نزدیک می‌کند: حرکت از ایده به ابزار، و فشار آوردن به مرزهای چیزی که «ممکن» فرض می‌شود.",
       bio: "دانشمند علوم کامپیوتر و بنیان‌گذار هوش مصنوعی، خالق زبان Lisp و از معماران مفاهیم اولیهٔ محاسبات نمادین."
      },
 
     ESFP: { name:"John Conway", desc:"بازیگوشِ نابغه. ریاضی/CS رو به کشف و سرگرمی تبدیل می‌کنی.",
-      photo: "https://media.wired.com/photos/595481de8e8cc150fa8ec1f3/master/pass/Conway_1k.jpg",
+      photo: "images/Conway.png",
       analysis: "تو با کنجکاوی و بازی جلو می‌ری: از یک ایده‌ی کوچک، یک جهان کشف می‌سازی. از سرگرمی به شهود می‌رسی و از شهود به مفهوم. این انرژیِ کشف‌محور و بازیگوش تو را به جان کانوی نزدیک می‌کند: نشان دادن این‌که حتی بازی‌ها هم می‌تونن پنجره‌ای به مفاهیم عمیق ریاضی و محاسباتی باشند.",
       bio: "ریاضیدان خلاق قرن بیستم که با ابداع بازی زندگی نشان داد چگونه قوانین ساده می‌توانند رفتارهای پیچیده بسازند."
      }
@@ -547,7 +597,7 @@
         <g fill="none" stroke="url(#a)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
           ${inner}
         </g>
-        <g fill="rgba(232,236,255,0.22)" font-family="monospace" font-size="10">
+        <g fill="rgba(232,236,255,0.22)" font-family="Sahel" font-size="10">
           <text x="8" y="56">${theme.toUpperCase().slice(0,6)}</text>
         </g>
       </svg>
@@ -681,7 +731,6 @@
   }
 
 
-
   const baseScores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
   let state = { i:0, scores:{...baseScores}, history:[] };
   const app = document.getElementById("app");
@@ -722,12 +771,12 @@
         <div class="brand">
           <h1 class="title">شبیه کدام دانشمند CS/Math هستی؟</h1>
           <p class="subtitle">
-            ۱۲ سؤال کوتاه، خروجی ۴ حرفی (MBTI-like)، و بعد یک دانشمند که «الهام‌گرفته از سبک فکری/کاری» است.
+            12 سؤال کوتاه، خروجی 4 حرفی (MBTI-like)، و بعد یک دانشمند که «الهام‌گرفته از سبک فکری/کاری» است.
             نتیجه قرار نیست حکم قطعی شخصیتت باشه. فقط یک آینه‌ی سرگرم‌کننده‌ست.
           </p>
         </div>
         <div class="pills">
-          <div class="pill">تست نشریه</div>
+          <div class="pill">تست شخصیتی</div>
           <div class="pill alt">${questions.length} سؤال</div>
           <div class="pill">CS + Math</div>
         </div>
@@ -775,7 +824,7 @@
       </div>
 
       <div class="footer">
-        <span class="small">هیچ گزینه‌ای «بهتر» نیست. فقط نزدیک‌تر به سبک توست.</span>
+        <span class="small">گزینه واقعی رو انتخاب کن، نه اونی که به نظرت بهتره.</span>
       </div>
     `;
   }
@@ -809,7 +858,8 @@
 
     app.innerHTML = `
       <div class="resultHead">
-        <div class="identity">
+        
+        <div class="identity" style="flex: 1; min-width: 280px;">
           <div class="avatar">
             ${avatar}
           </div>
@@ -823,12 +873,6 @@
               />
             </div>
           ` : ``}
-
-          <div class="actions" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start;">
-            <button class="btn" onclick="start()">شروع مجدد</button>
-            <button class="btn" onclick="renderStart()">صفحه شروع</button>
-          </div>
-
 
           <div class="who">
             <h2 class="persian-title">${profile.name}</h2>
@@ -847,10 +891,13 @@
             <p class="subtitle persian-text" style="margin-top:10px;">
               ${profile.desc || ""}
             </p>
-
           </div>
         </div>
 
+        <div class="actions" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start; flex-shrink: 0;">
+          <button class="btn" onclick="start()">شروع مجدد</button>
+          <button class="btn" onclick="renderStart()">صفحه شروع</button>
+        </div>
 
       </div>
 
@@ -873,7 +920,7 @@
         </div>
       </div>
     `;
-    }
+  }
     
   renderStart();
 </script>
