@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>تست شخصیت شناسی: شبیه کدام دانشمند CS/Math هستی؟</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
 
@@ -350,9 +351,7 @@
         font-family: 'MyCyber', system-ui, -apple-system, sans-serif !important;
       }
 
-    /* ── [ADDED] Transition & feedback styles ── */
 
-    /* fade-out / fade-in for card content */
     #app {
       transition: opacity 0.18s ease, transform 0.18s ease;
     }
@@ -362,7 +361,6 @@
       pointer-events: none;
     }
 
-    /* ripple on option buttons */
     @keyframes opt-ripple {
       0%   { transform: scale(0); opacity: .55; }
       100% { transform: scale(3.5); opacity: 0; }
@@ -377,7 +375,6 @@
       animation: opt-ripple 0.52s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
-    /* selected state flash on the clicked button */
     button.opt.selected {
       border-color: var(--accent2);
       background: rgba(0, 212, 255, 0.14);
@@ -385,7 +382,6 @@
       transform: translateX(-4px) scale(0.985);
     }
 
-    /* loading overlay */
     .analyzing-overlay {
       display: flex;
       flex-direction: column;
@@ -415,7 +411,68 @@
       0%, 80%, 100% { transform: translateY(0); opacity: .5; }
       40%           { transform: translateY(-10px); opacity: 1; }
     }
-    /* ── end added styles ── */
+
+
+    .btn.share {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(90deg, rgba(124,92,255,.18), rgba(0,212,255,.14));
+      border-color: rgba(0,212,255,.32);
+      transition: background .2s, box-shadow .2s, transform .15s;
+    }
+    .btn.share:hover {
+      background: linear-gradient(90deg, rgba(124,92,255,.32), rgba(0,212,255,.26));
+      box-shadow: 0 0 18px rgba(0,212,255,.18);
+      transform: translateY(-1px);
+    }
+    .btn.share:disabled {
+      opacity: .55;
+      cursor: wait;
+      transform: none;
+    }
+    .btn.share svg { flex-shrink: 0; }
+
+    .share-modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(7,10,18,.82);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      animation: modal-in .22s ease;
+    }
+    @keyframes modal-in {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    .share-modal {
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 20px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.55);
+      padding: 24px;
+      max-width: 520px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+    .share-modal img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      display: block;
+    }
+    .share-modal-actions {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    }
+    .share-modal h3 {
+      margin: 0;
+      font-size: 15px;
+      color: var(--muted);
+      direction: rtl;
+    }
     
   </style>
 </head>
@@ -831,6 +888,7 @@
       </div>
     `;
   }
+
   function fadeOut(cb) {
     app.classList.add("fade-out");
     setTimeout(() => {
@@ -838,7 +896,6 @@
       app.classList.remove("fade-out");
     }, 190);
   }
-
 
   function renderStart(){
     app.innerHTML = `
@@ -904,14 +961,11 @@
     `;
   }
 
-
   window.exitToStart = function(){
     fadeOut(renderStart);
   };
 
-
   window.answer = function(optionIndex, btn){
-
     const ripple = document.createElement("span");
     ripple.className = "ripple";
     const rect = btn.getBoundingClientRect();
@@ -919,9 +973,7 @@
     ripple.style.top  = (rect.height / 2 - 30) + "px";
     btn.appendChild(ripple);
 
-
     btn.classList.add("selected");
-
 
     document.querySelectorAll(".opt").forEach(b => b.disabled = true);
 
@@ -938,15 +990,14 @@
       } else {
         fadeOut(renderQuestion);
       }
-    }, 420);
+    }, 420); 
   };
-
 
   function renderAnalyzing(){
     const messages = [
       "در حال تحلیل الگوهای شخصیتی...",
       "محاسبه‌ی محورهای شناختی...",
-      "پیدا کردن دانشمند نزدیک به شخصیت شما..."
+      "پیدا کردن شخصیت علمی شما..."
     ];
     let idx = 0;
 
@@ -959,13 +1010,11 @@
       </div>
     `;
 
-
     const msgEl = document.getElementById("analyzing-msg");
     const interval = setInterval(() => {
       idx++;
       if (msgEl && idx < messages.length) msgEl.textContent = messages[idx];
     }, 700);
-
 
     setTimeout(() => {
       clearInterval(interval);
@@ -978,7 +1027,7 @@
     const last = state.history.pop();
     applyAdd(last.add, -1);
     state.i = Math.max(0, state.i-1);
-    fadeOut(renderQuestion);
+    fadeOut(renderQuestion); 
   };
 
   function renderResult(){
@@ -1027,6 +1076,13 @@
         </div>
 
         <div class="actions" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start; flex-shrink: 0;">
+          <button class="btn share" id="share-btn" onclick="shareResult()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            اشتراک‌گذاری
+          </button>
           <button class="btn" onclick="start()">شروع مجدد</button>
           <button class="btn" onclick="exitToStart()">صفحه شروع</button>
         </div>
@@ -1054,6 +1110,86 @@
     `;
   }
     
+  window.shareResult = async function(){
+    const btn = document.getElementById("share-btn");
+    if (btn) { btn.disabled = true; btn.textContent = "در حال ساخت تصویر..."; }
+
+    try {
+      const canvas = await html2canvas(app, {
+        backgroundColor: "#070A12",
+        scale: 2,                 
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        ignoreElements: (el) => el.classList.contains("actions")
+      });
+
+      const dataUrl = canvas.toDataURL("image/png");
+
+      const backdrop = document.createElement("div");
+      backdrop.className = "share-modal-backdrop";
+      backdrop.innerHTML = `
+        <div class="share-modal">
+          <h3>پیش‌نمایش تصویر نتیجه</h3>
+          <img src="${dataUrl}" alt="نتیجه تست" />
+          <div class="share-modal-actions">
+            <button class="btn primary" id="download-btn">دانلود تصویر</button>
+            <button class="btn" onclick="this.closest('.share-modal-backdrop').remove()">بستن</button>
+          </div>
+        </div>
+      `;
+
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) backdrop.remove();
+      });
+
+      document.body.appendChild(backdrop);
+
+      document.getElementById("download-btn").addEventListener("click", () => {
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = "personality-result.png";
+        a.click();
+      });
+
+      const shareApiBtn = document.createElement("button");
+      shareApiBtn.className = "btn";
+      shareApiBtn.textContent = "اشتراک‌گذاری مستقیم";
+
+      if (navigator.share && navigator.canShare) {
+        canvas.toBlob(async (blob) => {
+          const file = new File([blob], "personality-result.png", { type: "image/png" });
+          if (navigator.canShare({ files: [file] })) {
+            shareApiBtn.addEventListener("click", async () => {
+              try {
+                await navigator.share({
+                  title: "نتیجه تست شخصیتی",
+                  text: "شبیه کدام دانشمند CS/Math هستی؟",
+                  files: [file]
+                });
+              } catch(_) {}
+            });
+            backdrop.querySelector(".share-modal-actions").appendChild(shareApiBtn);
+          }
+        });
+      }
+
+    } catch(err) {
+      console.error("share error", err);
+      alert("خطا در ساخت تصویر. لطفاً دوباره امتحان کن.");
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          اشتراک‌گذاری`;
+      }
+    }
+  };
+
   renderStart();
 </script>
 </body>
