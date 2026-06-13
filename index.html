@@ -412,7 +412,6 @@
       40%           { transform: translateY(-10px); opacity: 1; }
     }
 
-
     .btn.share {
       display: inline-flex;
       align-items: center;
@@ -687,7 +686,6 @@
       bio: "ریاضیدان خلاق قرن بیستم که با ابداع بازی زندگی نشان داد چگونه قوانین ساده می‌توانند رفتارهای پیچیده بسازند."
      }
   };
-
 
   function avatarSVGByScientist(name){
     const theme = {
@@ -990,7 +988,7 @@
       } else {
         fadeOut(renderQuestion);
       }
-    }, 420); 
+    }, 420);
   };
 
   function renderAnalyzing(){
@@ -1027,7 +1025,7 @@
     const last = state.history.pop();
     applyAdd(last.add, -1);
     state.i = Math.max(0, state.i-1);
-    fadeOut(renderQuestion); 
+    fadeOut(renderQuestion);
   };
 
   function renderResult(){
@@ -1056,7 +1054,7 @@
           ` : ``}
 
           <div class="who">
-            <h2 class="persian-title" style="font-weight: normal;">${profile.name}</h2>
+            <h2 class="persian-title">${profile.name}</h2>
 
             ${profile.bio ? `
               <p class="scientist-bio persian-text">
@@ -1110,14 +1108,34 @@
     `;
   }
     
+
+  async function inlineImages(el) {
+    const imgs = el.querySelectorAll("img");
+    await Promise.all([...imgs].map(img => new Promise(resolve => {
+      if (!img.src || img.src.startsWith("data:")) { resolve(); return; }
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", img.src, true);
+      xhr.responseType = "blob";
+      xhr.onload = () => {
+        const reader = new FileReader();
+        reader.onloadend = () => { img.src = reader.result; resolve(); };
+        reader.readAsDataURL(xhr.response);
+      };
+      xhr.onerror = resolve;
+      xhr.send();
+    })));
+  }
+
   window.shareResult = async function(){
     const btn = document.getElementById("share-btn");
     if (btn) { btn.disabled = true; btn.textContent = "در حال ساخت تصویر..."; }
 
     try {
+      await inlineImages(app);
+
       const canvas = await html2canvas(app, {
         backgroundColor: "#070A12",
-        scale: 2,                 
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
