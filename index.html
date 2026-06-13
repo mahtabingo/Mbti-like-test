@@ -349,6 +349,73 @@
       .actions button {
         font-family: 'MyCyber', system-ui, -apple-system, sans-serif !important;
       }
+
+    /* ── [ADDED] Transition & feedback styles ── */
+
+    /* fade-out / fade-in for card content */
+    #app {
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    #app.fade-out {
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+    }
+
+    /* ripple on option buttons */
+    @keyframes opt-ripple {
+      0%   { transform: scale(0); opacity: .55; }
+      100% { transform: scale(3.5); opacity: 0; }
+    }
+    button.opt .ripple {
+      position: absolute;
+      border-radius: 50%;
+      width: 60px; height: 60px;
+      background: rgba(0, 212, 255, 0.28);
+      pointer-events: none;
+      transform: scale(0);
+      animation: opt-ripple 0.52s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* selected state flash on the clicked button */
+    button.opt.selected {
+      border-color: var(--accent2);
+      background: rgba(0, 212, 255, 0.14);
+      box-shadow: 0 0 22px rgba(0, 212, 255, 0.22), inset 0 0 14px rgba(0, 212, 255, 0.08);
+      transform: translateX(-4px) scale(0.985);
+    }
+
+    /* loading overlay */
+    .analyzing-overlay {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 48px 24px;
+      min-height: 220px;
+    }
+    .analyzing-overlay .a-label {
+      font-size: 16px;
+      color: var(--muted);
+      letter-spacing: .5px;
+    }
+    .analyzing-dots {
+      display: flex; gap: 10px;
+    }
+    .analyzing-dots span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      animation: dot-bounce 1.1s ease-in-out infinite;
+    }
+    .analyzing-dots span:nth-child(2) { animation-delay: .18s; }
+    .analyzing-dots span:nth-child(3) { animation-delay: .36s; }
+    @keyframes dot-bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: .5; }
+      40%           { transform: translateY(-10px); opacity: 1; }
+    }
+    /* ── end added styles ── */
     
   </style>
 </head>
@@ -764,6 +831,14 @@
       </div>
     `;
   }
+  function fadeOut(cb) {
+    app.classList.add("fade-out");
+    setTimeout(() => {
+      cb();
+      app.classList.remove("fade-out");
+    }, 190);
+  }
+
 
   function renderStart(){
     app.innerHTML = `
@@ -798,7 +873,7 @@
 
   window.start = function(){
     state = { i:0, scores:{...baseScores}, history:[] };
-    renderQuestion();
+    fadeOut(renderQuestion);
   };
 
   function renderQuestion(){
@@ -812,14 +887,14 @@
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           ${state.i>0 ? `<button class="btn" onclick="back()">قبلی</button>` : ``}
-          <button class="btn" onclick="renderStart()">خروج</button>
+          <button class="btn" onclick="exitToStart()">خروج</button>
         </div>
       </div>
 
       <div class="q">${q.text}</div>
       <div class="opts">
         ${q.options.map((o, idx)=>`
-          <button class="opt" onclick="answer(${idx})">${o.label}</button>
+          <button class="opt" onclick="answer(${idx}, this)">${o.label}</button>
         `).join("")}
       </div>
 
@@ -829,24 +904,81 @@
     `;
   }
 
-  window.answer = function(optionIndex){
+
+  window.exitToStart = function(){
+    fadeOut(renderStart);
+  };
+
+
+  window.answer = function(optionIndex, btn){
+
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+    const rect = btn.getBoundingClientRect();
+    ripple.style.left = (rect.width / 2 - 30) + "px";
+    ripple.style.top  = (rect.height / 2 - 30) + "px";
+    btn.appendChild(ripple);
+
+
+    btn.classList.add("selected");
+
+
+    document.querySelectorAll(".opt").forEach(b => b.disabled = true);
+
     const q = questions[state.i];
     const opt = q.options[optionIndex];
 
-    applyAdd(opt.add, +1);
-    state.history.push({ qIndex: state.i, add: opt.add, chosen: opt.label, qText: q.text });
+    setTimeout(() => {
+      applyAdd(opt.add, +1);
+      state.history.push({ qIndex: state.i, add: opt.add, chosen: opt.label, qText: q.text });
+      state.i++;
 
-    state.i++;
-    if (state.i >= questions.length) renderResult();
-    else renderQuestion();
+      if (state.i >= questions.length) {
+        fadeOut(renderAnalyzing);
+      } else {
+        fadeOut(renderQuestion);
+      }
+    }, 420);
   };
+
+
+  function renderAnalyzing(){
+    const messages = [
+      "در حال تحلیل الگوهای شخصیتی...",
+      "محاسبه‌ی محورهای شناختی...",
+      "پیدا کردن دانشمند نزدیک به شخصیت شما..."
+    ];
+    let idx = 0;
+
+    app.innerHTML = `
+      <div class="analyzing-overlay">
+        <div class="analyzing-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="a-label" id="analyzing-msg">${messages[0]}</div>
+      </div>
+    `;
+
+
+    const msgEl = document.getElementById("analyzing-msg");
+    const interval = setInterval(() => {
+      idx++;
+      if (msgEl && idx < messages.length) msgEl.textContent = messages[idx];
+    }, 700);
+
+
+    setTimeout(() => {
+      clearInterval(interval);
+      fadeOut(renderResult);
+    }, 2100);
+  }
 
   window.back = function(){
     if (!state.history.length) return;
     const last = state.history.pop();
     applyAdd(last.add, -1);
     state.i = Math.max(0, state.i-1);
-    renderQuestion();
+    fadeOut(renderQuestion);
   };
 
   function renderResult(){
@@ -896,7 +1028,7 @@
 
         <div class="actions" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start; flex-shrink: 0;">
           <button class="btn" onclick="start()">شروع مجدد</button>
-          <button class="btn" onclick="renderStart()">صفحه شروع</button>
+          <button class="btn" onclick="exitToStart()">صفحه شروع</button>
         </div>
 
       </div>
